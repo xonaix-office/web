@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Xonaix — Something is coming</title>
+    
+    <meta name="description" content="Xonaix — Intelligence, Evolved. AI governance infrastructure.">
+    <meta name="keywords" content="AI, governance, infrastructure, intelligence, agents, security, zero point">
+    <meta name="author" content="Xonaix">
+    <meta name="copyright" content="© 2025 Xonaix">
+    <meta name="theme-color" content="#050810">
+    
+    <meta property="og:title" content="Xonaix — Intelligence, Evolved">
+    <meta property="og:description" content="AI governance infrastructure. Something is coming.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://xonaix.com">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --deep-void: #050810;
+            --electric-cyan: #00FFF0;
+            --electric-purple: #BD00FF;
+            --white-intense: #ffffff;
+        }
+
+        html, body {
+            width: 100%; 
+            min-height: 100dvh;
+            overflow-x: hidden;
+            background: var(--deep-void);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            perspective: 1200px;
+            -webkit-font-smoothing: antialiased;
+            -webkit-transform-style: preserve-3d; /* iOS fix */
+        }
+
+        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        .nebula-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: hidden; }
+        .nebula {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.15;
+            animation: nebulaDrift 40s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nebula-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--electric-cyan); animation-delay: 0s; }
+        .nebula-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: var(--electric-purple); animation-delay: -10s; }
+        .nebula-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: #fff; opacity: 0.05; animation-delay: -20s; }
+
+        @keyframes nebulaDrift {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+            100% { transform: translate(50px, 30px) scale(1.2); opacity: 0.2; }
+        }
+
+        .gradient-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 50% 50%, rgba(0, 255, 240, 0.02) 0%, transparent 80%);
+            z-index: 2; pointer-events: none;
+        }
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.06; z-index: 3; pointer-events: none;
+            filter: contrast(150%) brightness(100%);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        .container {
+            position: relative; 
+            width: 100%; 
+            min-height: 100dvh;
+            z-index: 10;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 2rem;
+            transform-style: preserve-3d;
+        }
+
+        .reveal-layer {
+            position: relative; 
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 240 / 280;
+            margin-bottom: 1.5rem; 
+            opacity: 0;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            animation: revealEntry 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards;
+        }
+        @keyframes revealEntry {
+            0% { opacity: 0; transform: scale(0.9) translateY(15px); filter: blur(8px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        .spin-layer {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        /* Canvas layers for X strokes */
+        .x-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .x-canvas-back { transform: translateZ(-35px); opacity: 0.5; }
+        .x-canvas-front { transform: translateZ(35px); }
+
+        .svg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: visible;
+        }
+
+        .layer-back   { transform: translateZ(-35px); } 
+        .layer-core   { transform: translateZ(0px); }   
+        .layer-front  { transform: translateZ(35px); }
+
+        .shield-fill {
+            fill: rgba(8, 12, 24, 0.92); 
+            stroke: none;
+        }
+
+        .containment-beam {
+            opacity: 0.5;
+            /* Stroke/fill controlled by JS */
+        }
+
+        .lattice-beam {
+            stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-width: 1.5;
+            /* Static stroke removed for iOS compatibility */
+            opacity: 0.4;
+            stroke-dasharray: 20, 30;
+            animation: dataStream 20s linear infinite;
+        }
+        @keyframes dataStream { to { stroke-dashoffset: -1000; } }
+
+        /* Nodes - JS animated */
+        .node-core { 
+            /* Fill controlled by JS */
+        }
+        .node-ring {
+            fill: none; stroke-width: 2; opacity: 0;
+            animation: ringExpand 3s ease-out infinite;
+            /* Stroke controlled by JS */
+        }
+        .node-ring-2 { animation-delay: 1s; }
+        .node-ring-3 { animation-delay: 2s; }
+        @keyframes ringExpand {
+            0% { r: 5; opacity: 0.8; stroke-width: 3; }
+            100% { r: 25; opacity: 0; stroke-width: 0.5; }
+        }
+
+        /* Zero Point */
+        .zero-point-core { 
+            /* Fill controlled by JS */
+        }
+        .zero-point-aura { opacity: 0.4; animation: auraPulse 4s ease-in-out infinite; }
+        @keyframes auraPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.15); }
+        }
+        
+        .energy-ring {
+            fill: none; stroke-width: 2; stroke-linecap: round; opacity: 0.8;
+            /* Stroke controlled by JS */
+        }
+        .ring-1 { animation: orbitX 3s linear infinite; }
+        .ring-2 { animation: orbitY 4s linear infinite; }
+        .ring-3 { animation: orbitZ 5s linear infinite; }
+
+        @keyframes orbitX { 0% { transform: rotateX(75deg) rotateY(0deg); } 100% { transform: rotateX(75deg) rotateY(360deg); } }
+        @keyframes orbitY { 0% { transform: rotateX(75deg) rotateY(60deg) rotateZ(0deg); } 100% { transform: rotateX(75deg) rotateY(60deg) rotateZ(360deg); } }
+        @keyframes orbitZ { 0% { transform: rotateX(75deg) rotateY(-60deg) rotateZ(0deg); } 100% { transform: rotateX(75deg) rotateY(-60deg) rotateZ(-360deg); } }
+
+        .energy-ray {
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            animation: rayPulse 2s ease-in-out infinite;
+            /* Stroke controlled by JS */
+        }
+        .ray-1 { animation-delay: 0s; }
+        .ray-2 { animation-delay: 0.25s; }
+        .ray-3 { animation-delay: 0.5s; }
+        .ray-4 { animation-delay: 0.75s; }
+        .ray-5 { animation-delay: 1s; }
+        .ray-6 { animation-delay: 1.25s; }
+        .ray-7 { animation-delay: 1.5s; }
+        .ray-8 { animation-delay: 1.75s; }
+
+        @keyframes rayPulse {
+            0%, 100% { opacity: 0.3; stroke-width: 1; }
+            50% { opacity: 0.9; stroke-width: 2.5; }
+        }
+
+        .radiance-active .svg-layer { 
+            filter: brightness(1.4) drop-shadow(0 0 15px rgba(0,255,240,0.4)); 
+        }
+        .radiance-active .x-canvas {
+            filter: brightness(1.4) drop-shadow(0 0 20px rgba(0,255,240,0.6));
+        }
+
+        .pulse-wave {
+            position: absolute; top: 50%; left: 50%;
+            width: 20px; height: 20px; margin-left: -10px; margin-top: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(0,255,240,0.5) 40%, transparent 70%);
+            animation: pulseExpand 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            pointer-events: none;
+        }
+        @keyframes pulseExpand {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(35); opacity: 0; }
+        }
+
+        .text-content {
+            text-align: center; z-index: 10;
+            animation: textFadeIn 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s forwards;
+            opacity: 0;
+        }
+        @keyframes textFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .wordmark-svg {
+            width: clamp(180px, 50vw, 320px); height: auto; margin-bottom: 0.5rem;
+        }
+        .wordmark-text {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 36px; font-weight: 300; letter-spacing: 12px;
+        }
+
+        .tagline-primary {
+            font-size: clamp(0.9rem, 3vw, 1.1rem); color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 0.3rem;
+        }
+        
+        .tagline-secondary {
+            font-size: clamp(0.75rem, 2.5vw, 0.9rem); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem;
+        }
+
+        .domain-wrapper {
+            display: inline-block; padding: 0.5rem 1.5rem;
+            border: 1px solid rgba(0, 255, 240, 0.3); border-radius: 2rem;
+            background: rgba(0, 255, 240, 0.05); margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .domain-wrapper:hover {
+            border-color: rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        .domain {
+            font-size: clamp(0.8rem, 2.5vw, 1rem); color: var(--white-intense); letter-spacing: 0.15em;
+        }
+        
+        .copyright {
+            font-size: 0.7rem; color: rgba(255, 255, 255, 0.3); letter-spacing: 0.1em;
+            cursor: help; transition: all 0.3s ease;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 1rem; }
+            .reveal-layer { max-width: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    <div class="nebula-container">
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+    </div>
+    <div class="gradient-overlay"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+        <div class="reveal-layer" id="xLogoReveal">
+            <div class="spin-layer" id="xLogoSpinner">
+
+                <canvas class="x-canvas x-canvas-back" id="xCanvasBack" width="240" height="280"></canvas>
+
+                <svg class="svg-layer layer-back" viewBox="0 0 240 280">
+                    <path class="shield-fill" 
+                          d="M20 20 L70 20 L120 100 L170 20 L220 20 L220 70 L160 140 L220 260 L170 260 L120 180 L70 260 L20 260 L80 140 L20 70 Z" />
+                    
+                    <g transform="translate(120, 140)"><circle r="5" class="node-ring node-ring-1" id="nrB1"/><circle r="5" class="node-core" id="ncB1"/></g>
+                    <g transform="translate(220, 20)"><circle r="6" class="node-ring node-ring-1" id="nrB2"/><circle r="6" class="node-core" id="ncB2"/></g>
+                    <g transform="translate(20, 260)"><circle r="6" class="node-ring node-ring-1" id="nrB3"/><circle r="6" class="node-core" id="ncB3"/></g>
+                    <g transform="translate(120, 100)"><circle r="3" class="node-ring node-ring-1" id="nrB4"/><circle r="3" class="node-core" id="ncB4"/></g>
+                    <g transform="translate(120, 180)"><circle r="3" class="node-ring node-ring-1" id="nrB5"/><circle r="3" class="node-core" id="ncB5"/></g>
+                    <g transform="translate(20, 20)"><circle r="4" class="node-ring node-ring-1" id="nrB6"/><circle r="4" class="node-core" id="ncB6"/></g>
+                    <g transform="translate(220, 260)"><circle r="4" class="node-ring node-ring-1" id="nrB7"/><circle r="4" class="node-core" id="ncB7"/></g>
+                </svg>
+
+                <svg class="svg-layer layer-core" viewBox="0 0 240 280">
+                    <g class="containment-beam" id="containmentBeams">
+                        <rect x="119" y="100" width="2" height="80" rx="1" />
+                        <rect x="218" y="18" width="4" height="60" rx="2" />
+                        <rect x="18" y="258" width="4" height="20" rx="2" />
+                        <rect x="18" y="18" width="4" height="60" rx="2" />
+                        <rect x="218" y="258" width="4" height="20" rx="2" />
+                        <rect x="70" y="139" width="100" height="2" />
+                    </g>
+
+                    <g class="zero-point-container" transform="translate(120, 140)">
+                        <circle cx="0" cy="0" r="35" class="zero-point-aura" id="zpAura"/>
+                        
+                        <g id="energyRays">
+                            <line x1="0" y1="-30" x2="0" y2="-50" class="energy-ray ray-1" id="ray1"/>
+                            <line x1="21" y1="-21" x2="35" y2="-35" class="energy-ray ray-2" id="ray2"/>
+                            <line x1="30" y1="0" x2="50" y2="0" class="energy-ray ray-3" id="ray3"/>
+                            <line x1="21" y1="21" x2="35" y2="35" class="energy-ray ray-4" id="ray4"/>
+                            <line x1="0" y1="30" x2="0" y2="50" class="energy-ray ray-5" id="ray5"/>
+                            <line x1="-21" y1="21" x2="-35" y2="35" class="energy-ray ray-6" id="ray6"/>
+                            <line x1="-30" y1="0" x2="-50" y2="0" class="energy-ray ray-7" id="ray7"/>
+                            <line x1="-21" y1="-21" x2="-35" y2="-35" class="energy-ray ray-8" id="ray8"/>
+                        </g>
+
+                        <ellipse cx="0" cy="0" rx="22" ry="8" class="energy-ring ring-1" id="orbit1"/>
+                        <ellipse cx="0" cy="0" rx="22" ry="8" class="energy-ring ring-2" id="orbit2"/>
+                        <ellipse cx="0" cy="0" rx="22" ry="8" class="energy-ring ring-3" id="orbit3"/>
+                        
+                        <circle cx="0" cy="0" r="12" class="zero-point-core" id="zpCore"/>
+                        <circle cx="-3" cy="-3" r="4" fill="white" opacity="0.6"/>
+                    </g>
+
+                    <g class="lattice-beam" id="latticeBeams">
+                        <path d="M120 100 L160 140 L120 180 L80 140 Z" />
+                        <path d="M120 100 L120 180 M80 140 L160 140" />
+                        <path d="M70 20 L120 100 L170 20" />
+                        <path d="M70 260 L120 180 L170 260" />
+                        <path d="M20 70 L80 140 L20 180" />
+                        <path d="M220 70 L160 140 L220 180" />
+                    </g>
+                </svg>
+
+                <canvas class="x-canvas x-canvas-front" id="xCanvasFront" width="240" height="280"></canvas>
+
+                <svg class="svg-layer layer-front" viewBox="0 0 240 280">
+                    <path class="shield-fill" 
+                          d="M20 20 L70 20 L120 100 L170 20 L220 20 L220 70 L160 140 L220 260 L170 260 L120 180 L70 260 L20 260 L80 140 L20 70 Z" />
+                    
+                    <g transform="translate(120, 140)"><circle r="5" class="node-ring node-ring-1" id="nrF1"/><circle r="5" class="node-ring node-ring-2" id="nrF1b"/><circle r="5" class="node-ring node-ring-3" id="nrF1c"/><circle r="5" class="node-core" id="ncF1"/></g>
+                    <g transform="translate(220, 20)"><circle r="6" class="node-ring node-ring-1" id="nrF2"/><circle r="6" class="node-ring node-ring-2" id="nrF2b"/><circle r="6" class="node-core" id="ncF2"/></g>
+                    <g transform="translate(20, 260)"><circle r="6" class="node-ring node-ring-1" id="nrF3"/><circle r="6" class="node-ring node-ring-2" id="nrF3b"/><circle r="6" class="node-core" id="ncF3"/></g>
+                    <g transform="translate(120, 100)"><circle r="3" class="node-ring node-ring-1" id="nrF4"/><circle r="3" class="node-core" id="ncF4"/></g>
+                    <g transform="translate(120, 180)"><circle r="3" class="node-ring node-ring-1" id="nrF5"/><circle r="3" class="node-core" id="ncF5"/></g>
+                    <g transform="translate(20, 20)"><circle r="4" class="node-ring node-ring-1" id="nrF6"/><circle r="4" class="node-core" id="ncF6"/></g>
+                    <g transform="translate(220, 260)"><circle r="4" class="node-ring node-ring-1" id="nrF7"/><circle r="4" class="node-core" id="ncF7"/></g>
+                </svg>
+
+            </div>
+        </div>
+
+        <div class="text-content">
+            <svg class="wordmark-svg" viewBox="0 0 320 50">
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="wordmark-text" id="wordmark">xonaix</text>
+            </svg>
+            
+            <p class="tagline-primary">Something is coming</p>
+            <p class="tagline-secondary" id="tagline">Intelligence, Evolved.</p>
+            <div class="domain-wrapper" id="domainWrapper">
+                <p class="domain">xonaix.com</p>
+            </div>
+            <p class="copyright" id="copyright">© 2025 Xonaix</p>
+        </div>
+    </div>
+
+    <script>
+        // === COLOR ENGINE ===
+        const colors = {
+            cyan: { r: 0, g: 255, b: 240 },
+            purple: { r: 189, g: 0, b: 255 },
+            white: { r: 255, g: 255, b: 255 }
+        };
+
+        function lerpColor(c1, c2, t) {
+            return {
+                r: Math.round(c1.r + (c2.r - c1.r) * t),
+                g: Math.round(c1.g + (c2.g - c1.g) * t),
+                b: Math.round(c1.b + (c2.b - c1.b) * t)
+            };
+        }
+
+        function colorToRgb(c) {
+            return `rgb(${c.r}, ${c.g}, ${c.b})`;
+        }
+
+        function colorToRgba(c, a) {
+            return `rgba(${c.r}, ${c.g}, ${c.b}, ${a})`;
+        }
+
+        function getCycleColor(time, duration, offset = 0) {
+            const t = ((time + offset) % duration) / duration;
+            const phase = t * 3;
+            
+            if (phase < 1) {
+                return lerpColor(colors.cyan, colors.white, phase);
+            } else if (phase < 2) {
+                return lerpColor(colors.white, colors.purple, phase - 1);
+            } else {
+                return lerpColor(colors.purple, colors.cyan, phase - 2);
+            }
+        }
+
+        // === X PATH DEFINITION ===
+        const xPath = [
+            [20, 20], [70, 20], [120, 100], [170, 20], [220, 20],
+            [220, 70], [160, 140], [220, 260], [170, 260], [120, 180],
+            [70, 260], [20, 260], [80, 140], [20, 70], [20, 20]
+        ];
+
+        // === CANVAS X STROKE RENDERER ===
+        function drawXStroke(ctx, color, glowColor, lineWidth, glowSize) {
+            ctx.clearRect(0, 0, 240, 280);
+            
+            // Glow layer
+            ctx.save();
+            ctx.shadowColor = colorToRgba(glowColor, 0.8);
+            ctx.shadowBlur = glowSize;
+            ctx.strokeStyle = colorToRgb(color);
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(xPath[0][0], xPath[0][1]);
+            for (let i = 1; i < xPath.length; i++) {
+                ctx.lineTo(xPath[i][0], xPath[i][1]);
+            }
+            ctx.stroke();
+            ctx.restore();
+            
+            // Sharp stroke on top
+            ctx.strokeStyle = colorToRgb(color);
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(xPath[0][0], xPath[0][1]);
+            for (let i = 1; i < xPath.length; i++) {
+                ctx.lineTo(xPath[i][0], xPath[i][1]);
+            }
+            ctx.stroke();
+        }
+
+        // === ELEMENT REFERENCES ===
+        const xCanvasFront = document.getElementById('xCanvasFront');
+        const xCanvasBack = document.getElementById('xCanvasBack');
+        const ctxFront = xCanvasFront.getContext('2d');
+        const ctxBack = xCanvasBack.getContext('2d');
+
+        // Node cores
+        const nodeCoresFront = ['ncF1','ncF2','ncF3','ncF4','ncF5','ncF6','ncF7'].map(id => document.getElementById(id));
+        const nodeCoresBack = ['ncB1','ncB2','ncB3','ncB4','ncB5','ncB6','ncB7'].map(id => document.getElementById(id));
+        const nodeRingsFront = document.querySelectorAll('.layer-front .node-ring');
+        const nodeRingsBack = document.querySelectorAll('.layer-back .node-ring');
+
+        // Zero point
+        const zpCore = document.getElementById('zpCore');
+        const zpAura = document.getElementById('zpAura');
+        const orbits = ['orbit1','orbit2','orbit3'].map(id => document.getElementById(id));
+        const rays = ['ray1','ray2','ray3','ray4','ray5','ray6','ray7','ray8'].map(id => document.getElementById(id));
+
+        // Other elements - get ALL animated paths/elements
+        const containmentRects = document.querySelectorAll('#containmentBeams rect');
+        const latticePaths = document.querySelectorAll('#latticeBeams path');
+        const wordmark = document.getElementById('wordmark');
+        const tagline = document.getElementById('tagline');
+        const domainWrapper = document.getElementById('domainWrapper');
+
+        // === MAIN ANIMATION LOOP ===
+        let startTime = null;
+
+        function animate(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+
+            // X Strokes - Canvas rendered, 6 second cycle
+            const strokeColorFront = getCycleColor(elapsed, 6000);
+            const strokeColorBack = getCycleColor(elapsed, 6000, 3000);
+            
+            drawXStroke(ctxFront, strokeColorFront, strokeColorFront, 4, 15);
+            drawXStroke(ctxBack, strokeColorBack, strokeColorBack, 3, 10);
+
+            // Node cores - 4 second cycle, staggered
+            // iOS FIX: Use style.fill instead of setAttribute for direct DOM manipulation
+            nodeCoresFront.forEach((node, i) => {
+                if (node) {
+                    const c = getCycleColor(elapsed, 4000, i * 400);
+                    node.style.fill = colorToRgb(c);
+                    node.style.filter = `drop-shadow(0 0 5px ${colorToRgba(c, 0.8)}) drop-shadow(0 0 10px ${colorToRgba(c, 0.6)}) drop-shadow(0 0 20px ${colorToRgba(c, 0.4)})`;
+                }
+            });
+            
+            nodeCoresBack.forEach((node, i) => {
+                if (node) {
+                    const c = getCycleColor(elapsed, 4000, i * 400 + 2000);
+                    node.style.fill = colorToRgb(c);
+                    node.style.filter = `drop-shadow(0 0 4px ${colorToRgba(c, 0.6)}) drop-shadow(0 0 8px ${colorToRgba(c, 0.4)})`;
+                }
+            });
+
+            // Node rings - iOS FIX: Use style.stroke
+            nodeRingsFront.forEach((ring, i) => {
+                const c = getCycleColor(elapsed, 3000, i * 200);
+                ring.style.stroke = colorToRgb(c);
+            });
+            nodeRingsBack.forEach((ring, i) => {
+                const c = getCycleColor(elapsed, 3000, i * 200 + 1500);
+                ring.style.stroke = colorToRgb(c);
+            });
+
+            // Zero Point Core - 3 second cycle
+            const coreColor = getCycleColor(elapsed, 3000);
+            zpCore.style.fill = colorToRgb(coreColor);
+            zpCore.style.filter = `drop-shadow(0 0 10px ${colorToRgba(coreColor, 0.9)}) drop-shadow(0 0 20px ${colorToRgba(coreColor, 0.7)}) drop-shadow(0 0 40px ${colorToRgba(coreColor, 0.5)})`;
+
+            // Aura
+            const auraColor = getCycleColor(elapsed, 4000, 1000);
+            zpAura.style.fill = colorToRgb(auraColor);
+
+            // Orbit rings - iOS FIX: Use style.stroke
+            orbits.forEach((orbit, i) => {
+                if (orbit) {
+                    const c = getCycleColor(elapsed, 5000, i * 1500);
+                    orbit.style.stroke = colorToRgb(c);
+                }
+            });
+
+            // Energy rays - iOS FIX: Use style.stroke
+            rays.forEach((ray, i) => {
+                if (ray) {
+                    const c = getCycleColor(elapsed, 2000, i * 200);
+                    ray.style.stroke = colorToRgb(c);
+                }
+            });
+
+            // Containment beams - iOS FIX: Use style.fill on each rect
+            const beamColor = getCycleColor(elapsed, 6000);
+            containmentRects.forEach(rect => {
+                rect.style.fill = colorToRgb(beamColor);
+            });
+
+            // Lattice beams - iOS FIX: Use style.stroke on each path
+            const latticeColor = getCycleColor(elapsed, 8000);
+            latticePaths.forEach(path => {
+                path.style.stroke = colorToRgb(latticeColor);
+            });
+
+            // Wordmark
+            const wmColor = getCycleColor(elapsed, 6000);
+            wordmark.style.fill = colorToRgb(wmColor);
+            wordmark.style.filter = `drop-shadow(0 0 8px ${colorToRgba(wmColor, 0.6)}) drop-shadow(0 0 15px ${colorToRgba(wmColor, 0.4)})`;
+
+            // Tagline
+            const tagColor = getCycleColor(elapsed, 4000, 2000);
+            tagline.style.color = colorToRgb(tagColor);
+            tagline.style.textShadow = `0 0 15px ${colorToRgba(tagColor, 0.5)}`;
+
+            // Domain border
+            const borderColor = getCycleColor(elapsed, 8000, 1000);
+            domainWrapper.style.borderColor = colorToRgba(borderColor, 0.4);
+            domainWrapper.style.boxShadow = `0 0 15px ${colorToRgba(borderColor, 0.15)}`;
+
+            requestAnimationFrame(animate);
+        }
+
+        // === PARTICLES ===
+        const particleCanvas = document.getElementById('particles');
+        const particleCtx = particleCanvas.getContext('2d');
+        let width, height, particles;
+        const particleCount = 80;
+
+        function initParticles() {
+            resizeParticles();
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.15,
+                    vy: (Math.random() - 0.5) * 0.15,
+                    radius: Math.random() * 1.5 + 0.5,
+                    opacity: Math.random() * 0.6 + 0.2,
+                    hue: Math.random() > 0.5 ? 180 : 280
+                });
+            }
+        }
+
+        function resizeParticles() {
+            width = particleCanvas.width = window.innerWidth;
+            height = particleCanvas.height = window.innerHeight;
+        }
+
+        function animateParticles() {
+            particleCtx.clearRect(0, 0, width, height);
+            particles.forEach((p) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = width; if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height; if (p.y > height) p.y = 0;
+                
+                particleCtx.beginPath();
+                particleCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                particleCtx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.opacity})`;
+                particleCtx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        window.addEventListener('resize', resizeParticles);
+
+        // === SPIN & RADIANCE ===
+        const spinner = document.getElementById('xLogoSpinner');
+        const revealLayer = document.getElementById('xLogoReveal');
+        let currentRotation = 0;
+
+        function triggerPulse() {
+            const pulse = document.createElement('div');
+            pulse.classList.add('pulse-wave');
+            revealLayer.appendChild(pulse);
+            setTimeout(() => { pulse.remove(); }, 2000);
+        }
+
+        function triggerSpin() {
+            const direction = Math.random() < 0.5 ? 1 : -1;
+            const spinTime = (Math.random() * (4.5 - 2.5) + 2.5).toFixed(2);
+            
+            currentRotation += (360 * direction);
+
+            spinner.style.transition = `transform ${spinTime}s cubic-bezier(0.45, 0.05, 0.55, 0.95)`;
+            spinner.style.transform = `rotateY(${currentRotation}deg)`;
+            
+            revealLayer.classList.add('radiance-active');
+
+            setTimeout(triggerPulse, spinTime * 100);
+            setTimeout(triggerPulse, spinTime * 400);
+            
+            setTimeout(() => {
+                revealLayer.classList.remove('radiance-active');
+            }, spinTime * 1000);
+
+            scheduleNextSpin();
+        }
+
+        function scheduleNextSpin() {
+            const randomWait = Math.random() * (12000 - 3000) + 3000;
+            setTimeout(triggerSpin, randomWait);
+        }
+
+        // === COPYRIGHT EASTER EGG ===
+        const copyrightText = document.getElementById('copyright');
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        const deviceType = isMobile ? 'Mobile Uplink' : 'Desktop System';
+        const version = 'v9.2'; // Updated version
+
+        copyrightText.addEventListener('mouseenter', () => {
+            copyrightText.textContent = `${version} :: ${deviceType}`;
+            copyrightText.style.opacity = '1';
+            copyrightText.style.color = '#00FFF0';
+            copyrightText.style.textShadow = '0 0 10px rgba(0, 255, 240, 0.5)';
+        });
+
+        copyrightText.addEventListener('mouseleave', () => {
+            copyrightText.textContent = '© 2025 Xonaix';
+            copyrightText.style.opacity = null;
+            copyrightText.style.color = null;
+            copyrightText.style.textShadow = null;
+        });
+
+        copyrightText.addEventListener('click', () => {
+            copyrightText.textContent = `${version} :: ${deviceType}`;
+            setTimeout(() => { copyrightText.textContent = '© 2025 Xonaix'; }, 3000);
+        });
+
+        // === PARALLAX ===
+        document.addEventListener('mousemove', (e) => {
+            if (isMobile) return;
+            const x = (window.innerWidth / 2 - e.pageX) / 30;
+            const y = (window.innerHeight / 2 - e.pageY) / 30;
+            revealLayer.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+
+        // === iOS SAFARI SPECIFIC FIXES ===
+        function applyIOSFixes() {
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                // Force hardware acceleration for 3D transforms
+                document.body.style.webkitTransformStyle = 'preserve-3d';
+                document.body.style.webkitBackfaceVisibility = 'hidden';
+                
+                // Ensure canvas layers are hardware accelerated
+                const canvases = document.querySelectorAll('.x-canvas');
+                canvases.forEach(canvas => {
+                    canvas.style.webkitTransform = 'translate3d(0,0,0)';
+                });
+            }
+        }
+
+        // === INIT ===
+        setTimeout(() => {
+            applyIOSFixes();
+            initParticles();
+            animateParticles();
+            requestAnimationFrame(animate);
+            scheduleNextSpin();
+        }, 100);
+    </script>
+</body>
+</html>
